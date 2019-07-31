@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SocketioServiceService } from '../providers/socketio-service/socketio-service.service'
 
 @Component({
   selector: 'app-home',
@@ -6,7 +7,29 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  message: String = "";
+  messages = [];
+  currentUser: String = "";
+  name: String;
+  join: boolean = false;
 
-  constructor() {}
+  constructor(private chatRoom: SocketioServiceService) {}
 
+  joinRoom(name){
+    this.join = this.chatRoom.joinRoom(name);
+    this.chatRoom.showMessages(this.messages);
+  }
+
+  sendMessage(message){
+    this.message = this.chatRoom.sendMessage(message);
+  }
+
+  exitRoom(){
+    this.join = this.chatRoom.exitRoom();
+  }
+
+  ionViewWillLeave(){
+    this.chatRoom.ionViewWillLeave();
+  }
+  
 }

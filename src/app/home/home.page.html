@@ -1,14 +1,65 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Ionic Blank
+     Chat Devs
     </ion-title>
+    
   </ion-toolbar>
+
+  <div *ngIf="join !== true">
+      <ion-list>
+          <ion-item>
+            <ion-input type="text" value="" [(ngModel)]="name" placeholder="user name"></ion-input>
+          </ion-item>
+       </ion-list>
+       <ion-button color="dark" (click)="joinRoom(name)">join as {{name}}</ion-button>
+  </div>
+  
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="join != false">
+  <ion-fab>
+    <ion-button color="dark" *ngIf="join === true" (click)="exitRoom()">Exit</ion-button>
+  </ion-fab>
+
   <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+    <div>
+      <ion-grid >
+        <ion-text color="medium" text-center>
+          <p>You joined the chat as {{ name }}</p>
+        </ion-text>
+        <ion-row *ngFor="let message of messages">
+      
+            <ion-col size="9" *ngIf="message.user !== name" class="message other-message">
+              <b>{{ message.user }}</b><br>
+              <span>{{ message.msg }}</span>
+              <div class="time" text-right><br>{{ message.createdAt | date:'short' }}</div>
+            </ion-col>
+        
+            <ion-col offset="3" size="9" *ngIf="message.user === name" class="message my-message">
+              <b>{{ message.user }}</b><br>
+              <span>{{ message.msg }}</span>
+              <div class="time" text-right><br>{{ message.createdAt | date:'short' }}</div>
+            </ion-col>
+            
+          </ion-row>
+        </ion-grid>  
+      </div>
   </div>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-row align-items-center *ngIf="join === true">
+          <ion-col size="10">
+            <ion-textarea auto-grow class="message-input" rows="1" [disabled]="join !== true" [(ngModel)]="message"></ion-textarea>
+          </ion-col>
+          <ion-col size="2">
+            <ion-button expand="block" fill="clear" color="primary" [disabled]="message === ''" class="msg-btn"
+              (click)="sendMessage(message)">
+              <ion-icon name="ios-send" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+  </ion-toolbar>
+</ion-footer>
